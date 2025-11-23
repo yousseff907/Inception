@@ -1,0 +1,23 @@
+# Create .gitignore at your repo root
+cat > .gitignore << 'EOF'
+# Secrets and credentials
+secrets/
+*.txt
+
+# Environment variables
+.env
+srcs/.env
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+EOF

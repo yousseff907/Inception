@@ -1,13 +1,29 @@
-# !/bin/bash
+#!/bin/bash
 
-# 1. Wait for MariaDB to be ready
-# (Why wait? Think about it...)
+echo "Waiting for Mariadb..."
+while ! mysqladmin ping -h "mariadb" --silent; do
+	echo "Mariadb est endormis"
+	sleep 2
+done
+echo "Mariadb is ready"
 
-# 2. Create wp-config.php with database credentials
-# (How? Using wp-cli or manually?)
+echo "Creating WordPress configuration..."
+wp config create \
+	--dbname="${MYSQL_DATABASE}" \
+	--dbuser="${MYSQL_USER}" \
+	--dbpass="${MYSQL_PASSWORD}" \
+	--dbhost="mariadb" \
+	--allow-root
 
-# 3. Install WordPress (create admin, set site URL)
-# (Using what tool?)
+echo "Installing WordPress"
+wp core install \
+	--url="${DOMAIN_NAME}" \
+	--title="Inception WordPress" \
+	--admin_user="${WP_ADMIN_USER}" \
+	--admin_password="${WP_ADMIN_PASSWORD}" \
+	--admin_email="${WP_ADMIN_EMAIL}" \
+	--allow-root
+echo "WordPress setup complete"
 
-# 4. Start PHP-FPM daemon
-# (What command? Should it be in foreground or background?)
+echo "Starting PHP_FPM..."
+exec php-fpm -F

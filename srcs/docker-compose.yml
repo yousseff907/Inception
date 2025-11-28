@@ -41,10 +41,10 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/yitani/data/mariadb
+      device: /home/admin/data/mariadb
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/yitani/data/wordpress
+      device: /home/admin/data/wordpress

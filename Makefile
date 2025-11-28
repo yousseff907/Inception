@@ -6,7 +6,7 @@
 #    By: yitani <yitani@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/27 11:04:20 by yitani            #+#    #+#              #
-#    Updated: 2025/11/27 11:04:21 by yitani           ###   ########.fr        #
+#    Updated: 2025/11/28 19:51:00 by yitani           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,14 @@ all:
 	mkdir -p /home/$(USER)/data/wordpress
 	docker-compose -f srcs/docker-compose.yml up -d --build
 
+up:
+	docker-compose -f srcs/docker-compose.yml up -d
+
 down:
 	docker-compose -f srcs/docker-compose.yml down
+
+stop:
+	docker-compose -f srcs/docker-compose.yml stop
 
 clean:
 	docker-compose -f srcs/docker-compose.yml down -v
@@ -27,4 +33,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all down clean fclean re
+.PHONY: all up down stop clean fclean re

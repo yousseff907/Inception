@@ -1,165 +1,93 @@
-# Inception Project
+# Inception - Docker Infrastructure
 
-This repository contains a full Docker-based infrastructure that hosts a secure WordPress website powered by MariaDB and served through NGINX using HTTPS. All services are containerized, isolated, and orchestrated using Docker Compose, following the requirements of the 42 Inception project.
-
----
-
-## 📁 Project Structure
-
+## 🏗️ Architecture Overview
 ```
-your-repo/
-│
-├── Makefile                              # Automation commands (build, start, stop, clean)
-├── README.md                             # Project documentation
-├── .gitignore                            # Prevent secrets from being committed
-│
-├── secrets/                              # Sensitive data (NEVER commit!)
-│   ├── .gitkeep
-│   ├── credentials.txt                   # WordPress admin credentials
-│   ├── db_password.txt                   # Database user password
-│   └── db_root_password.txt              # Database root password
-│
-└── srcs/                                 # Main source directory
-    ├── docker-compose.yml                # Orchestration file (defines all services)
-    ├── .env                              # Environment variables (NEVER commit!)
-    │
-    └── requirements/                     # Container definitions
-        │
-        ├── mariadb/                      # Database container
-        │   ├── Dockerfile
-        │   ├── .dockerignore
-        │   ├── conf/                     # MariaDB config
-        │   └── tools/                    # Setup scripts (init-db.sh)
-        │
-        ├── nginx/                        # Web server container
-        │   ├── Dockerfile
-        │   ├── .dockerignore
-        │   ├── conf/                     # NGINX config, SSL
-        │   └── tools/
-        │
-        ├── wordpress/                    # Application container
-        │   ├── Dockerfile
-        │   ├── .dockerignore
-        │   ├── conf/                     # PHP-FPM & WP config
-        │   └── tools/                    # wp-install.sh, etc.
-        │
-        ├── tools/                        # General tools
-        │
-        └── bonus/                        # Optional services
-            ├── redis/
-            ├── ftp/
-            ├── adminer/
-            └── ...
+┌─────────────────────────────────────────────────────────────┐
+│                        INTERNET                              │
+│                      (Port 443 HTTPS)                        │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │   NGINX Container      │
+              │   - TLS/SSL (443)      │
+              │   - Reverse Proxy      │
+              └───────────┬────────────┘
+                          │ FastCGI (9000)
+                          ▼
+              ┌────────────────────────┐
+              │  WordPress Container   │
+              │   - PHP-FPM (9000)     │
+              │   - WP-CLI             │
+              └───────────┬────────────┘
+                          │ MySQL (3306)
+                          ▼
+              ┌────────────────────────┐
+              │   MariaDB Container    │
+              │   - Database (3306)    │
+              └────────────────────────┘
+
+                    ┌──────────────────────┐
+                    │  Docker Volumes      │
+                    │  (Persistent Data)   │
+                    ├──────────────────────┤
+                    │ /home/admin/data/    │
+                    │  ├── wordpress/      │
+                    │  └── mariadb/        │
+                    └──────────────────────┘
 ```
 
----
+## 📦 Services
 
-## 🎛️ Makefile Commands
+### NGINX
+- **Port:** 443 (HTTPS only)
+- **Purpose:** Web server, SSL termination, reverse proxy
+- **Connects to:** WordPress via FastCGI
 
-```
-all       # Build and start everything
-up        # Start containers
-down      # Stop and remove containers
-stop      # Stop containers (config kept)
-clean     # Remove containers and images
-fclean    # Remove everything including volumes
-re        # Rebuild everything from scratch
-```
+### WordPress + PHP-FPM
+- **Port:** 9000 (internal)
+- **Purpose:** Application layer
+- **Connects to:** MariaDB for database queries
 
----
+### MariaDB
+- **Port:** 3306 (internal)
+- **Purpose:** Database storage
+- **Data:** Persistent in volume
 
-## 📊 Architecture Overview
+## 🔒 Network
 
-```
-INTERNET
-   │ HTTPS 443
-   ▼
-┌───────────────────────┐
-│      NGINX (443)      │
-│  - SSL termination     │
-│  - Reverse proxy       │
-└───────────┬───────────┘
-            │ FastCGI 9000
-            ▼
-┌───────────────────────┐
-│   WordPress (PHP-FPM) │
-│  - No web server       │
-└───────────┬───────────┘
-            │ MySQL 3306
-            ▼
-┌───────────────────────┐
-│      MariaDB (DB)     │
-└───────────┬───────────┘
-            │
-            ▼
-Docker Volumes
- - /home/login/data/wordpress
- - /home/login/data/db
+- **Network Name:** `inception`
+- **Type:** Bridge (internal)
+- **External Access:** Only via NGINX on port 443
+
+## 💾 Volumes
+
+- `wordpress_data` → `/home/admin/data/wordpress`
+- `mariadb_data` → `/home/admin/data/mariadb`
+
+## 🚀 Usage
+```bash
+# Start everything
+make
+
+# Stop containers
+make down
+
+# Clean everything
+make fclean
+
+# Rebuild from scratch
+make re
 ```
 
----
+## 🌐 Access
 
-## 🔄 System Workflow
+- **URL:** `https://yitani.42.fr` (add to `/etc/hosts`)
+- **Public IP:** `https://YOUR_EC2_IP`
+- **Admin Panel:** `/wp-admin`
 
-1. User runs `make`.
-2. Docker Compose builds images and creates the `inception` network.
-3. Volumes are created on the host machine.
-4. Containers start in the proper order:
+## ⚙️ Configuration
 
-   * **MariaDB** initializes and creates users.
-   * **WordPress** installs itself and connects to the DB.
-   * **NGINX** starts HTTPS and proxies to WordPress.
-5. User visits `https://login.42.fr`.
-6. Request flows → NGINX → WordPress → MariaDB → back to browser.
-
----
-
-## ✔️ Requirements Checklist
-
-### Infrastructure
-
-* 3 containers: **NGINX**, **WordPress**, **MariaDB**
-* Custom Dockerfiles
-* Alpine or Debian base images
-* Docker Compose orchestration
-* Dedicated Docker network
-* 2 host-bound volumes
-
-### Security
-
-* TLSv1.2 or TLSv1.3
-* Only port 443 open
-* No passwords in Dockerfiles
-* Admin username must *not* be "admin"
-* `.env` and secrets stored locally, not committed
-
-### Container Rules
-
-* No `latest` tags
-* No infinite loops (`sleep infinity`, `tail -f`)
-* Proper PID 1 daemons
-* Auto-restart policies
-* No host networking or deprecated `--link`
-
-### Domain
-
-* `login.42.fr` resolves to localhost (127.0.0.1)
-
-### File Organization
-
-* Correct project tree
-* Makefile at root
-* Volumes in `/home/login/data/`
-
----
-
-## 🚀 Suggested Implementation Order
-
-1. Create project structure
-2. Implement MariaDB container
-3. Implement WordPress container
-4. Implement NGINX container
-5. Write `docker-compose.yml`
-6. Write Makefile
-7. Test locally
-8. Add bonus services
+- **Environment:** `srcs/.env`
+- **Docker Compose:** `srcs/docker-compose.yml`
+- **Dockerfiles:** `srcs/requirements/[service]/Dockerfile`

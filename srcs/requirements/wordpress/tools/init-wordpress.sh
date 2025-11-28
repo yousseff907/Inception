@@ -31,5 +31,11 @@ wp core install \
 	--allow-root
 echo "WordPress setup complete"
 
+echo "Creating second WordPress user..."
+wp user create ${WP_USER} ${WP_USER_EMAIL} \
+	--user_pass=${WP_USER_PASSWORD} \
+	--role=editor \
+	--allow-root
+
 echo "Starting PHP_FPM..."
 exec php-fpm8.2 -F

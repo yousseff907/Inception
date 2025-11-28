@@ -32,4 +32,4 @@ wp core install \
 echo "WordPress setup complete"
 
 echo "Starting PHP_FPM..."
-exec exec php-fpm8.2 -F
+exec php-fpm8.2 -F

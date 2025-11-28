@@ -7,6 +7,12 @@ while ! mysqladmin ping -h "mariadb" --silent; do
 done
 echo "Mariadb is ready"
 
+if [ ! -f /var/www/html/index.php ]; then
+    echo "Copying WordPress files..."
+    cp -r /usr/src/wordpress/* /var/www/html/
+    chown -R www-data:www-data /var/www/html
+fi
+
 echo "Creating WordPress configuration..."
 wp config create \
 	--dbname="${MYSQL_DATABASE}" \
@@ -26,4 +32,4 @@ wp core install \
 echo "WordPress setup complete"
 
 echo "Starting PHP_FPM..."
-exec php-fpm -F
+exec exec php-fpm8.2 -F

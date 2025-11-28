@@ -12,12 +12,11 @@ RUN apt-get update && \
 	mariadb-client && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/www/html && \
+RUN mkdir -p /var/www/html /usr/src && \
 	curl -LO https://wordpress.org/latest.zip && \
 	unzip latest.zip && \
 	rm latest.zip && \
-	mv wordpress/* /var/www/html/ && \
-	rmdir wordpress/
+	mv wordpress /usr/src/wordpress
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
 	chmod +x wp-cli.phar && \

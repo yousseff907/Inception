@@ -37,6 +37,18 @@ services:
     networks:
       - inception
     restart: always
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    env_file: .env
+    networks:
+      - inception
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:9000
+    restart: always
 
 networks:
   inception:
@@ -55,3 +67,9 @@ volumes:
       type: none
       o: bind
       device: /home/admin/data/wordpress
+  portainer_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/admin/data/portainer

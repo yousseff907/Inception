@@ -9,3 +9,7 @@ RUN apt-get update && \
 RUN mkdir -p /portainer && \
 	curl -L https://github.com/portainer/portainer/releases/latest/download/portainer-linux-amd64 -o /portainer/portainer && \
 	chmod +x /portainer/portainer
+
+RUN mkdir -p /data
+
+EXPOSE 8080

@@ -48,7 +48,7 @@ services:
     security_opt:
       - apparmor:unconfined
   static-website:
-    build: ./requirements/bonus/netdata
+    build: ./requirements/bonus/website
     container_name: website
     networks:
       - inception

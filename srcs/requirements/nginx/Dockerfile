@@ -12,7 +12,6 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -subj "/C=LB/ST=Beirut/L=Beirut/O=42/OU=42/CN=yitani.42.fr"
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-COPY ../bonus/website/static-website.html /var/www/static_site/index.html
 
 EXPOSE 443
 

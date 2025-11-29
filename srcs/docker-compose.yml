@@ -30,6 +30,13 @@ services:
     ports:
       - 443:443
     restart: always
+  adminer:
+    build: ./requirements/adminer
+    container_name: adminer
+    env_file: .env
+    networks:
+      - inception
+    restart: always
 
 networks:
   inception:

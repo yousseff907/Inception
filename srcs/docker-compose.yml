@@ -47,6 +47,12 @@ services:
       - SYS_PTRACE
     security_opt:
       - apparmor:unconfined
+  static-website:
+    build: ./requirements/bonus/netdata
+    container_name: website
+    networks:
+      - inception
+    restart: always
 
 networks:
   inception:

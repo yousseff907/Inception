@@ -8,4 +8,4 @@ EXPOSE 19999
 
 COPY conf/netdata.conf /etc/netdata/netdata.conf
 
-CMD ["netdata", "-D"]
+CMD ["/usr/sbin/netdata", "-D"]

@@ -6,4 +6,6 @@ RUN apt-get update && \
 
 EXPOSE 19999
 
+COPY conf/netdata.conf /etc/netdata/netdata.conf
+
 CMD ["netdata", "-D"]

@@ -12,6 +12,6 @@ RUN mkdir -p /portainer && \
 
 RUN mkdir -p /data
 
-EXPOSE 8080
+EXPOSE 9000
 
 CMD ["/portainer/portainer", "--data", "/data"]

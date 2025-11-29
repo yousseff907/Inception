@@ -6,7 +6,7 @@
 #    By: yitani <yitani@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/27 11:04:20 by yitani            #+#    #+#              #
-#    Updated: 2025/11/28 19:51:00 by yitani           ###   ########.fr        #
+#    Updated: 2025/11/29 18:27:50 by yitani           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ clean:
 	docker system prune -af
 
 fclean: clean
-	sudo rm -rf /home/$(USER)/data
+	sudo rm -rf $(HOME)/data
 
 re: fclean all
 

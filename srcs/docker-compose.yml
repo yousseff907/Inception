@@ -37,16 +37,16 @@ services:
     networks:
       - inception
     restart: always
-  portainer:
-    build: ./requirements/bonus/portainer
-    container_name: portainer
-    env_file: .env
+  netdata:
+    build: ./requirements/bonus/netdata
+    container_name: netdata
     networks:
       - inception
-    volumes:
-      - portainer_data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
 
 networks:
   inception:
@@ -65,9 +65,3 @@ volumes:
       type: none
       o: bind
       device: /home/admin/data/wordpress
-  portainer_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/admin/data/portainer

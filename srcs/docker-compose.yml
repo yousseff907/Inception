@@ -65,6 +65,8 @@ services:
     networks:
       - inception
     env_file: .env
+    volumes:
+      - wordpress_data:/var/www/html
     restart: always
 
 networks:

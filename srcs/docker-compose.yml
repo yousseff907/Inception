@@ -59,6 +59,13 @@ services:
     networks:
       - inception
     restart: always
+  ftp-server:
+    build: ./requirements/bonus/ftp
+    container_name: ftp-server
+    networks:
+      - inception
+    env_file: .env
+    restart: always
 
 networks:
   inception:

@@ -5,7 +5,7 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY conf/ftp.conf /etc/vsftpd.conf
-COPY tools/init-ftp.sh /usr/local/bin/
+COPY tools/init-ftp.sh /usr/local/bin/init-ftp.sh
 
 RUN chmod +x /usr/local/bin/init-ftp.sh
 

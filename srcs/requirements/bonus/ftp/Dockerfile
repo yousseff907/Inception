@@ -11,6 +11,6 @@ COPY tools/init-ftp.sh /usr/local/bin/init-ftp.sh
 
 RUN chmod +x /usr/local/bin/init-ftp.sh
 
-EXPOSE 21 21000-21010
+EXPOSE 20 21 21000-21010
 
 ENTRYPOINT ["/usr/local/bin/init-ftp.sh"]

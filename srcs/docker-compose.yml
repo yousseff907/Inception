@@ -53,6 +53,12 @@ services:
     networks:
       - inception
     restart: always
+  redis-cache:
+    build: ./requirements/bonus/redis
+    container_name: redis-cache
+    networks:
+      - inception
+    restart: always
 
 networks:
   inception:

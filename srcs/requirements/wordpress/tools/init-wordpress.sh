@@ -21,6 +21,9 @@ wp config create \
 	--dbhost="mariadb" \
 	--allow-root
 
+wp config set WP_REDIS_HOST 'redis-cache' --allow-root
+wp config set WP_REDIS_PORT 6379  --raw --allow-root
+
 echo "Installing WordPress"
 wp core install \
 	--url="${DOMAIN_NAME}" \
@@ -36,6 +39,10 @@ wp user create ${WP_USER} ${WP_USER_EMAIL} \
 	--user_pass=${WP_USER_PASSWORD} \
 	--role=editor \
 	--allow-root
+
+echo "Installing Redis plugin..."
+wp plugin install redis-cache --activate --allow-root
+wp redis enable --allow-root
 
 echo "Starting PHP_FPM..."
 exec php-fpm8.2 -F
